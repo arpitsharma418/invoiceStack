@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import InvoiceForm from "../components/InvoiceForm";
-import API from "../api";
+import InvoiceForm from "../components/InvoiceForm.js";
+import API from "../api.js";
 
 export default function CreateInvoice() {
   const navigate = useNavigate();

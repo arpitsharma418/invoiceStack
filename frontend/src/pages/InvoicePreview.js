@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import API from "../api";
-import { useAuth } from "../AuthContext";
+import API from "../api.js";
+import { useAuth } from "../AuthContext.js";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
@@ -174,9 +174,7 @@ export default function InvoicePreview() {
               {invoice.invoice_number}
             </p>
           </div>
-          <span
-            className={`text-xs font-medium`}
-          >
+          <span className={`text-xs font-medium`}>
             {invoice.status.toUpperCase()}
           </span>
         </div>

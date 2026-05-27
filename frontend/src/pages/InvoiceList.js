@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import API from "../api";
+import API from "../api.js";
 
 export default function InvoiceList() {
   const [invoices, setInvoices] = useState([]);
@@ -41,10 +41,11 @@ export default function InvoiceList() {
   const filtered = invoices.filter(
     (inv) =>
       inv.client_name.toLowerCase().includes(search.toLowerCase()) ||
-      inv.invoice_number.toLowerCase().includes(search.toLowerCase())
+      inv.invoice_number.toLowerCase().includes(search.toLowerCase()),
   );
 
-  if (loading) return <div className="text-center py-20 text-gray-400">Loading...</div>;
+  if (loading)
+    return <div className="text-center py-20 text-gray-400">Loading...</div>;
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
@@ -69,7 +70,11 @@ export default function InvoiceList() {
       {filtered.length === 0 ? (
         <div className="text-center py-20 text-gray-400 border border-dashed border-black/20 rounded">
           <p>No invoices found.</p>
-          <Link to="/invoices/create" className="text-sm text-blue-600 hover:underline">Create Your First Invoice
+          <Link
+            to="/invoices/create"
+            className="text-sm text-blue-600 hover:underline"
+          >
+            Create Your First Invoice
           </Link>
         </div>
       ) : (
@@ -89,13 +94,23 @@ export default function InvoiceList() {
             <tbody>
               {filtered.map((inv) => (
                 <tr key={inv.id} className="border-t hover:bg-gray-50">
-                  <td className="px-5 py-3 font-medium text-indigo-600">{inv.invoice_number}</td>
+                  <td className="px-5 py-3 font-medium text-indigo-600">
+                    {inv.invoice_number}
+                  </td>
                   <td className="px-5 py-3">{inv.client_name}</td>
-                  <td className="px-5 py-3">{new Date(inv.issue_date).toLocaleDateString()}</td>
-                  <td className="px-5 py-3">{new Date(inv.due_date).toLocaleDateString()}</td>
-                  <td className="px-5 py-3 font-semibold">₹{parseFloat(inv.total).toFixed(2)}</td>
                   <td className="px-5 py-3">
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusColors[inv.status]}`}>
+                    {new Date(inv.issue_date).toLocaleDateString()}
+                  </td>
+                  <td className="px-5 py-3">
+                    {new Date(inv.due_date).toLocaleDateString()}
+                  </td>
+                  <td className="px-5 py-3 font-semibold">
+                    ₹{parseFloat(inv.total).toFixed(2)}
+                  </td>
+                  <td className="px-5 py-3">
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs font-medium ${statusColors[inv.status]}`}
+                    >
                       {inv.status}
                     </span>
                   </td>

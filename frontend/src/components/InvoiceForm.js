@@ -1,5 +1,4 @@
 import { useState } from "react";
-import API from "../api";
 
 // Empty item template
 const emptyItem = { description: "", quantity: 1, rate: 0, amount: 0 };
@@ -21,8 +20,6 @@ export default function InvoiceForm({ initialData, onSubmit, submitLabel }) {
   );
   const [items, setItems] = useState(initialData?.items || [{ ...emptyItem }]);
   const [loading, setLoading] = useState(false);
-  const [aiLoading, setAiLoading] = useState(false);
-  const [aiContext, setAiContext] = useState("");
 
   // Calculate totals
   const subtotal = items.reduce(
@@ -57,34 +54,15 @@ export default function InvoiceForm({ initialData, onSubmit, submitLabel }) {
     setItems(items.filter((_, i) => i !== index));
   }
 
-  async function handleAiGenerate(type) {
-    setAiLoading(true);
-    try {
-      const res = await API.post("/ai/generate", {
-        type,
-        context: aiContext || form.client_name,
-      });
-      const text = res.data.text;
-
-      if (type === "notes") {
-        setForm((prev) => ({ ...prev, notes: text }));
-      }
-      if (type === "payment_terms") {
-        setForm((prev) => ({ ...prev, payment_terms: text }));
-      }
-    } catch (err) {
-      alert("AI generation failed. Check your Gemini API key.");
-    } finally {
-      setAiLoading(false);
-    }
-  }
-
   async function handleSubmit(e) {
     e.preventDefault();
     setLoading(true);
-    const payload = { ...form, subtotal, total, items };
-    await onSubmit(payload);
-    setLoading(false);
+    try {
+      const payload = { ...form, subtotal, total, items };
+      await onSubmit(payload);
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -305,44 +283,8 @@ export default function InvoiceForm({ initialData, onSubmit, submitLabel }) {
         </div>
       </div>
 
-      {/* AI Section */}
       <div className="bg-white rounded border p-5 mb-5">
-        <h2 className="font-semibold text-gray-700 mb-1">AI-Powered Content</h2>
-        <p className="text-xs text-gray-400 mb-4">
-          Use AI to generate notes and payment terms
-        </p>
-
-        <div className="mb-3">
-          <label className="text-sm font-medium text-gray-600">
-            Context for AI (optional)
-          </label>
-          <input
-            value={aiContext}
-            onChange={(e) => setAiContext(e.target.value)}
-            placeholder="e.g. web development project, 30-day payment"
-            className="mt-1 w-full border rounded py-2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-black"
-          />
-        </div>
-
-        <div className="flex gap-2 mb-4">
-          <button
-            type="button"
-            disabled={aiLoading}
-            onClick={() => handleAiGenerate("notes")}
-            className="bg-black/80 text-white px-3 py-2 rounded text-sm hover:bg-black"
-          >
-            {aiLoading ? "Generating..." : "Generate Notes"}
-          </button>
-          <button
-            type="button"
-            disabled={aiLoading}
-            onClick={() => handleAiGenerate("payment_terms")}
-            className="bg-black/80 text-white px-3 py-2 rounded text-sm hover:bg-black"
-          >
-            {aiLoading ? "Generating..." : "Generate Payment Terms"}
-          </button>
-        </div>
-
+        <h2 className="font-semibold text-gray-700 mb-4">Additional Details</h2>
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="text-sm font-medium text-gray-600">Notes</label>

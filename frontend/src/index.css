@@ -17,3 +17,7 @@
 .btn-secondary{
     @apply text-xs font-semibold px-3 py-2 rounded hover:bg-zinc-100 border;
 }
+
+.input_theme{
+  @apply w-full text-sm border rounded bg-transparent px-2 py-3 outline-none focus:border-black;
+}

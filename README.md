@@ -1,142 +1,82 @@
-# InvoiceStack
+# InvoiceStack - Invoice Management Platform
 
-InvoiceStack is a full-stack invoice management app built with React, Express, MySQL, JWT auth, and Gemini AI.
+A simple app to create and manage invoices. It has three main parts:
+- **Frontend** - React
+- **Backend** - Node.js
+- **Database** - MongoDB
 
-## Project Structure
+---
 
-```text
-invoice-app/
-  backend/   Express API + MySQL
-  frontend/  React app
-```
+## Setup for Local Development
 
-## Local Development
+### Backend Setup
 
-### 1. Database
+1. Go to the backend folder and install packages:
+   ```bash
+   cd backend
+   npm install
+   npm run dev
+   ```
 
-Import the schema:
+2. Create a `.env` file in the `backend` folder (see `backend/.env` for reference)
 
-```bash
-mysql -u root -p < backend/database.sql
-```
+### Frontend Setup
 
-### 2. Backend
+1. Go to the frontend folder and install packages:
+   ```bash
+   cd frontend
+   npm install
+   npm start
+   ```
 
-Copy `backend/.env.example` to `backend/.env` and fill in your values.
+2. The app will open in your browser at `http://localhost:3000`
 
-```bash
-cd backend
-npm install
-npm run dev
-```
+---
 
-Backend runs on `http://localhost:5000`.
+## Deploy Online
 
-### 3. Frontend
+### Step 1: Database (MongoDB Atlas)
 
-If you want the default local setup, leave `frontend/.env` empty or copy `frontend/.env.example`.
+1. Create a free database cluster on MongoDB Atlas.
+2. Copy your connection string.
+3. Save this as `MONGODB_URI` in your environment settings
 
-```bash
-cd frontend
-npm install
-npm start
-```
+### Step 2: Backend (Deploy to Render)
 
-Frontend runs on `http://localhost:3000` and proxies `/api` requests to the backend automatically.
+1. Go to Render.com and create a new Web Service
+2. Connect your code repository
+3. Set the Root Directory to `backend`
+4. Add these environment variables:
+   - `NODE_ENV` = `production`
+   - `PORT` = `5000`
+   - `JWT_SECRET` = `your-secret-key`
+   - `MONGODB_URI` = `your-mongodb-connection-string`
+   - `CORS_ORIGIN` = `https://your-frontend-url.vercel.app`
+   - `FRONTEND_URL` = `https://your-frontend-url.vercel.app`
 
-## Environment Variables
+5. Deploy and copy your backend URL (like `https://your-backend.onrender.com`)
 
-### Backend
+### Step 3: Frontend (Deploy to Vercel)
 
-Required:
+1. Go to Vercel.com and import your frontend folder
+2. Add this environment variable:
+   - `REACT_APP_API_URL` = `https://your-backend.onrender.com/api`
 
-```env
-PORT=5000
-DB_HOST=localhost
-DB_PORT=3306
-DB_USER=root
-DB_PASSWORD=yourpassword
-DB_NAME=invoice_db
-JWT_SECRET=change-me
-GEMINI_API_KEY=your_gemini_api_key_here
-```
+3. Deploy your frontend
 
-Optional:
+---
 
-```env
-CORS_ORIGIN=http://localhost:3000
-FRONTEND_URL=http://localhost:3000
-DATABASE_URL=mysql://user:password@host:3306/database
-DB_CONNECTION_LIMIT=10
-```
+## How It Works
 
-`DATABASE_URL` is supported for Railway-style managed MySQL URLs. If it is set, it takes priority over the individual DB fields.
+- **Frontend** is the website where users login and create invoices
+- **Backend** handles all the business logic and talks to the database
+- **Database** stores all user and invoice information
+- They talk to each other using the API
 
-### Frontend
+---
 
-Optional:
+## Important Notes
 
-```env
-REACT_APP_API_URL=
-```
-
-Leave it empty for same-origin `/api` requests. Set it only when your frontend is hosted separately from the backend.
-
-## Railway Deployment
-
-This repo is configured so Railway can deploy it from the repository root as a single service.
-
-### What happens in production
-
-- Railway runs `npm run build` from the root.
-- The frontend is built into `frontend/build`.
-- The backend starts with `npm run start`.
-- In production, Express serves the React build and handles all `/api/*` routes.
-
-### Railway setup
-
-1. Create a new Railway project from this repository.
-2. Add a MySQL database service, or connect an existing MySQL instance.
-3. Set the backend environment variables in Railway.
-4. Deploy the root service.
-
-Recommended Railway variables:
-
-```env
-NODE_ENV=production
-JWT_SECRET=your-strong-secret
-GEMINI_API_KEY=your_gemini_api_key_here
-DATABASE_URL=mysql://user:password@host:3306/database
-FRONTEND_URL=https://your-app.up.railway.app
-CORS_ORIGIN=https://your-app.up.railway.app
-```
-
-If you use Railway's MySQL plugin variables instead of `DATABASE_URL`, the app also supports:
-
-```env
-MYSQLHOST=
-MYSQLPORT=
-MYSQLUSER=
-MYSQLPASSWORD=
-MYSQLDATABASE=
-```
-
-### Health Check
-
-Railway health check endpoint:
-
-```text
-/api/health
-```
-
-## Root Scripts
-
-From the repository root:
-
-```bash
-npm run install:all
-npm run dev:backend
-npm run dev:frontend
-npm run build
-npm run start
-```
+- The database stores invoices with all items inside.
+- All three parts can be updated independently
+- `frontend/build` is created automatically and should not be saved to git

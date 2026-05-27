@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import InvoiceForm from "../components/InvoiceForm";
-import API from "../api";
+import InvoiceForm from "../components/InvoiceForm.js";
+import API from "../api.js";
 
 export default function EditInvoice() {
   const { id } = useParams();
@@ -27,7 +27,14 @@ export default function EditInvoice() {
     }
   }
 
-  if (!invoice) return <div className="text-center py-20 text-gray-400">Loading...</div>;
+  if (!invoice)
+    return <div className="text-center py-20 text-gray-400">Loading...</div>;
 
-  return <InvoiceForm initialData={invoice} onSubmit={handleSubmit} submitLabel="Update" />;
+  return (
+    <InvoiceForm
+      initialData={invoice}
+      onSubmit={handleSubmit}
+      submitLabel="Update"
+    />
+  );
 }

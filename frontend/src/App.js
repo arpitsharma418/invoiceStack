@@ -1,35 +1,90 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { AuthProvider, useAuth } from "./AuthContext";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import Dashboard from "./pages/Dashboard";
-import InvoiceList from "./pages/InvoiceList";
-import CreateInvoice from "./pages/CreateInvoice";
-import EditInvoice from "./pages/EditInvoice";
-import InvoicePreview from "./pages/InvoicePreview";
-import Navbar from "./components/Navbar";
+
+import { AuthProvider, useAuth } from "./AuthContext.js";
+
+import Login from "./pages/Login.js";
+import Register from "./pages/Register.js";
+import Dashboard from "./pages/Dashboard.js";
+import InvoiceList from "./pages/InvoiceList.js";
+import CreateInvoice from "./pages/CreateInvoice.js";
+import EditInvoice from "./pages/EditInvoice.js";
+import InvoicePreview from "./pages/InvoicePreview.js";
+import Navbar from "./components/Navbar.js";
+
 import "./index.css";
 
-// Protect routes - redirect to login if not logged in
 function PrivateRoute({ children }) {
-  const { user } = useAuth();
-  return user ? children : <Navigate to="/login" />;
+  const { isAuthenticated, loading } = useAuth();
+
+  if (loading) {
+    return <h1>Loading...</h1>;
+  }
+
+  return isAuthenticated ? children : <Navigate to="/login" />;
 }
 
 function AppRoutes() {
-  const { user } = useAuth();
+  const { isAuthenticated } = useAuth();
 
   return (
     <BrowserRouter>
-      {user && <Navbar />}
+      {isAuthenticated && <Navbar />}
+
       <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
-        <Route path="/invoices" element={<PrivateRoute><InvoiceList /></PrivateRoute>} />
-        <Route path="/invoices/create" element={<PrivateRoute><CreateInvoice /></PrivateRoute>} />
-        <Route path="/invoices/edit/:id" element={<PrivateRoute><EditInvoice /></PrivateRoute>} />
-        <Route path="/invoices/preview/:id" element={<PrivateRoute><InvoicePreview /></PrivateRoute>} />
+        <Route
+          path="/login"
+          element={isAuthenticated ? <Navigate to="/" /> : <Login />}
+        />
+
+        <Route
+          path="/register"
+          element={isAuthenticated ? <Navigate to="/" /> : <Register />}
+        />
+
+        <Route
+          path="/"
+          element={
+            <PrivateRoute>
+              <Dashboard />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/invoices"
+          element={
+            <PrivateRoute>
+              <InvoiceList />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/invoices/create"
+          element={
+            <PrivateRoute>
+              <CreateInvoice />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/invoices/edit/:id"
+          element={
+            <PrivateRoute>
+              <EditInvoice />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/invoices/preview/:id"
+          element={
+            <PrivateRoute>
+              <InvoicePreview />
+            </PrivateRoute>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );

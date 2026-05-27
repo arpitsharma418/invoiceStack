@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../AuthContext";
+import { useAuth } from "../AuthContext.js";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -27,10 +27,10 @@ export default function Navbar() {
         </Link>
       </div>
       <div className="flex items-center gap-3">
-        <span className="text-sm text-indigo-200">Hi, {user?.name}</span>
+        <span className="text-sm">Hi, {user?.name}</span>
         <button
           onClick={handleLogout}
-          className="bg-white text-indigo-700 text-sm px-3 py-1 rounded hover:bg-indigo-100"
+          className="btn-danger"
         >
           Logout
         </button>
